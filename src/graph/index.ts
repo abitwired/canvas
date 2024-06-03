@@ -1,26 +1,26 @@
-import { Node } from "./node";
+import { INode } from "./node";
 import { Edge } from "./edge";
 
 /**
  * Graph class represents a graph of nodes and edges.
  * @class
- * @property {Node[]} nodes - The nodes in the graph.
+ * @property {INode[]} nodes - The nodes in the graph.
  * @property {Edge[]} edges - The edges in the graph.
  */
 export class Graph {
-  nodes: Node[] = [];
+  nodes: INode[] = [];
   edges: Edge[] = [];
 
-  addNode(node: Node) {
+  addNode(node: INode) {
     this.nodes.push(node);
   }
 
-  addEdge({ from, to }: { from: Node; to: Node }) {
+  addEdge({ from, to }: { from: INode; to: INode }) {
     const edge = new Edge(from, to);
     this.edges.push(edge);
   }
 
-  removeNode(node: Node) {
+  removeNode(node: INode) {
     this.nodes = this.nodes.filter((n) => n !== node);
     this.edges = this.edges.filter(
       (edge) => edge.from !== node && edge.to !== node

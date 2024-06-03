@@ -1,4 +1,4 @@
-import { Node } from "./node";
+import { INode, Node } from "./node";
 import { Edge } from "./edge";
 import { Graph } from "./index";
 
@@ -55,8 +55,8 @@ export class Serializer {
 
     // Add edges to the graph
     edges.forEach((edge: { to: string; from: string }) => {
-      const from = graph.nodes.find((node: Node) => node.id === edge.from);
-      const to = graph.nodes.find((node: Node) => node.id === edge.to);
+      const from = graph.nodes.find((node: INode) => node.id === edge.from);
+      const to = graph.nodes.find((node: INode) => node.id === edge.to);
 
       if (from && to) {
         graph.addEdge({ from, to });

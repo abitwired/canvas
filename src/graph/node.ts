@@ -1,3 +1,88 @@
+export interface INode {
+  /**
+   * The unique identifier of the node.
+   */
+  id: string;
+
+  /**
+   * The x coordinate of the node.
+   */
+  x: number;
+
+  /**
+   * The y coordinate of the node.
+   */
+  y: number;
+
+  /**
+   * The width of the node.
+   */
+  width: number;
+
+  /**
+   * The height of the node.
+   */
+  height: number;
+
+  /**
+   * The color of the node.
+   */
+  color: string;
+
+  /**
+   * True if the node is being hovered over, false otherwise.
+   */
+  isHovered: boolean;
+
+  /**
+   * True if the node is being dragged, false otherwise.
+   */
+  isDragging: boolean;
+
+  /**
+   * Draw the node on the canvas.
+   * @param ctx - The 2D rendering context of the canvas.
+   */
+  draw(ctx: CanvasRenderingContext2D): void;
+
+  /**
+   * Handle the hover event on the node.
+   */
+  hoverOn(): void;
+
+  /**
+   * Handle the mouse off hover event on the node.
+   */
+  hoverOff(): void;
+
+  /**
+   * Handle the drag start event on the node.
+   * @param x - The x coordinate of the mouse.
+   * @param y - The y coordinate of the mouse.
+   */
+  onDragStart(x: number, y: number): void;
+
+  /**
+   * Handle the drag event on the node.
+   * @param x - The x coordinate of the mouse.
+   * @param y - The y coordinate of the mouse.
+   */
+  onDrag(x: number, y: number): void;
+
+  /**
+   * Handle the drop event on the node.
+   */
+  onDragEnd(): void;
+
+  /**
+   * Check if the node contains a point.
+   * @param x - The x coordinate of the point.
+   * @param y - The y coordinate of the point.
+   * @returns True if the node contains the point, false otherwise.
+   */
+  containsPoint(x: number, y: number): boolean;
+}
+
 /**
  * Node class represents a node in a graph.
  * @class
@@ -6,13 +91,17 @@
  * @property {number} width - The width of the node.
  * @property {number} height - The height of the node.
  */
-export class Node {
+export class Node implements INode {
   id: string;
   x: number;
   y: number;
   width: number;
   height: number;
   color: string;
+  isHovered = false;
+  isDragging = false;
+  dragOffsetX = 0;
+  dragOffsetY = 0;
 
   constructor({
     id,
@@ -37,8 +126,55 @@ export class Node {
     this.color = color;
   }
 
+  /**
+   * Sets the drag start position for the node.
+   * @param x - The x-coordinate of the drag start position.
+   * @param y - The y-coordinate of the drag start position.
+   */
+  public onDragStart(x: number, y: number) {
+    this.isDragging = true;
+    this.dragOffsetX = x - this.x;
+    this.dragOffsetY = y - this.y;
+  }
+
+  /**
+   * Resets the drag offset after dragging ends.
+   */
+  public onDragEnd() {
+    this.isDragging = false;
+    this.dragOffsetX = 0;
+    this.dragOffsetY = 0;
+  }
+
+  /**
+   * Updates the node position while dragging.
+   * @param x - The x-coordinate of the drag position.
+   * @param y - The y-coordinate of the drag position.
+   */
+  public onDrag(x: number, y: number): void {
+    this.x = x - this.dragOffsetX;
+    this.y = y - this.dragOffsetY;
+  }
+
+  public hoverOn(): void {
+    this.isHovered = true;
+  }
+
+  public hoverOff(): void {
+    this.isHovered = false;
+  }
+
   public static createId() {
     return Math.random().toString(36).substring(2);
+  }
+
+  public containsPoint(x: number, y: number) {
+    return (
+      x >= this.x &&
+      x <= this.x + this.width &&
+      y >= this.y &&
+      y <= this.y + this.height
+    );
   }
 
   public draw(ctx: CanvasRenderingContext2D) {
@@ -81,7 +217,7 @@ export class Node {
 
     // Add a white border around the node
     ctx.strokeStyle = "white";
-    ctx.lineWidth = 1;
+    ctx.lineWidth = this.isHovered ? 2 : 1;
     ctx.stroke();
   }
 }

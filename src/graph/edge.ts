@@ -1,4 +1,4 @@
-import { Node } from "./node";
+import { INode } from "./node";
 
 /**
  * Edge class represents an edge in a graph.
@@ -7,10 +7,10 @@ import { Node } from "./node";
  * @property {Node} to - The node the edge is going to.
  */
 export class Edge {
-  to: Node;
-  from: Node;
+  to: INode;
+  from: INode;
 
-  constructor(from: Node, to: Node) {
+  constructor(from: INode, to: INode) {
     this.from = from;
     this.to = to;
   }
