@@ -24,6 +24,10 @@ interface INode {
      */
     color: string;
     /**
+     * The label of the node.
+     */
+    label: string;
+    /**
      * True if the node is being hovered over, false otherwise.
      */
     isHovered: boolean;
@@ -83,16 +87,18 @@ declare class Node implements INode {
     width: number;
     height: number;
     color: string;
+    label: string;
     isHovered: boolean;
     isDragging: boolean;
     dragOffsetX: number;
     dragOffsetY: number;
-    constructor({ id, x, y, width, height, color, }: {
+    constructor({ id, x, y, width, height, label, color, }: {
         id: string;
         x: number;
         y: number;
         width?: number;
         height?: number;
+        label?: string;
         color?: string;
     });
     /**
@@ -116,6 +122,8 @@ declare class Node implements INode {
     static createId(): string;
     containsPoint(x: number, y: number): boolean;
     draw(ctx: CanvasRenderingContext2D): void;
+    private drawRectangle;
+    private drawLabel;
 }
 
 /**
@@ -123,10 +131,14 @@ declare class Node implements INode {
  * @class
  * @property {Node} from - The node the edge is coming from.
  * @property {Node} to - The node the edge is going to.
+ * @property {string} color - The color of the edge.
+ * @property {number} width - The width of the edge.
  */
 declare class Edge {
     to: INode;
     from: INode;
+    color: string;
+    width: number;
     constructor(from: INode, to: INode);
     draw(ctx: CanvasRenderingContext2D): void;
 }
@@ -221,12 +233,22 @@ declare class InfiniteCanvas {
      */
     private isDragging;
     /**
+     * The minimum zoom level.
+     */
+    private minZoom;
+    /**
+     * The maximum zoom level.
+     */
+    private maxZoom;
+    /**
      * Creates a new instance of InfiniteCanvas.
      * @param options - The options for creating the canvas.
      */
-    constructor({ canvas, background, }: {
+    constructor({ canvas, background, minZoom, maxZoom, }: {
         canvas: HTMLCanvasElement;
         background?: string;
+        minZoom?: number;
+        maxZoom?: number;
     });
     /**
      * Sets the graph to be drawn on the canvas.

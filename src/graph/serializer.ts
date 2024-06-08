@@ -12,7 +12,7 @@ export class Serializer {
    * @returns A JSON string representing the graph.
    */
   public static serialize(graph: Graph): string {
-    const nodes = graph.nodes.map((node) => ({
+    const nodes = graph.nodes.map((node: INode) => ({
       id: node.id,
       x: node.x,
       y: node.y,
@@ -35,26 +35,23 @@ export class Serializer {
    * @returns The deserialized graph.
    */
   static deserialize(data: string): Graph {
-    const { nodes, edges } = JSON.parse(data);
+    type EdgeJson = {
+      to: string;
+      from: string;
+    };
+
+    const { nodes, edges } = JSON.parse(data) as {
+      nodes: INode[];
+      edges: EdgeJson[];
+    };
 
     const graph = new Graph();
 
     // Add nodes to the graph
-    nodes.forEach((node: Node) => {
-      graph.addNode(
-        new Node({
-          id: node.id,
-          x: node.x,
-          y: node.y,
-          width: node.width,
-          height: node.height,
-          color: node.color,
-        })
-      );
-    });
+    nodes.forEach((node: INode) => graph.addNode(new Node(node)));
 
     // Add edges to the graph
-    edges.forEach((edge: { to: string; from: string }) => {
+    edges.forEach((edge: EdgeJson) => {
       const from = graph.nodes.find((node: INode) => node.id === edge.from);
       const to = graph.nodes.find((node: INode) => node.id === edge.to);
 

@@ -32,12 +32,11 @@ export class Graph {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    this.nodes.forEach((node) => {
-      node.draw(ctx);
-    });
-
     this.edges.forEach((edge) => {
       edge.draw(ctx);
+    });
+    this.nodes.forEach((node) => {
+      node.draw(ctx);
     });
   }
 }

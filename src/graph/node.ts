@@ -30,6 +30,11 @@ export interface INode {
   color: string;
 
   /**
+   * The label of the node.
+   */
+  label: string;
+
+  /**
    * True if the node is being hovered over, false otherwise.
    */
   isHovered: boolean;
@@ -98,6 +103,7 @@ export class Node implements INode {
   width: number;
   height: number;
   color: string;
+  label: string;
   isHovered = false;
   isDragging = false;
   dragOffsetX = 0;
@@ -109,6 +115,7 @@ export class Node implements INode {
     y,
     width = 200,
     height = 50,
+    label = "",
     color = "#444",
   }: {
     id: string;
@@ -116,6 +123,7 @@ export class Node implements INode {
     y: number;
     width?: number;
     height?: number;
+    label?: string;
     color?: string;
   }) {
     this.id = id;
@@ -123,6 +131,7 @@ export class Node implements INode {
     this.y = y;
     this.width = width;
     this.height = height;
+    this.label = label;
     this.color = color;
   }
 
@@ -178,6 +187,11 @@ export class Node implements INode {
   }
 
   public draw(ctx: CanvasRenderingContext2D) {
+    this.drawRectangle(ctx);
+    this.drawLabel(ctx);
+  }
+
+  private drawRectangle(ctx: CanvasRenderingContext2D) {
     // Add a shadow to the node
     ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
     ctx.shadowBlur = 10;
@@ -219,5 +233,20 @@ export class Node implements INode {
     ctx.strokeStyle = "white";
     ctx.lineWidth = this.isHovered ? 2 : 1;
     ctx.stroke();
+  }
+
+  private drawLabel(ctx: CanvasRenderingContext2D) {
+    ctx.fillStyle = "white";
+    ctx.font = "bold 20px Arial";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.fillText(this.label, this.x + this.width / 2, this.y + this.height / 2);
+
+    // Add a shadow to the text
+    ctx.shadowColor = "rgba(0, 0, 0, 0.2)";
+    ctx.shadowBlur = 5;
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 2;
   }
 }

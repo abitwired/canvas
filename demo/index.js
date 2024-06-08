@@ -11,8 +11,8 @@ fetch("./demo.json")
       const json = JSON.stringify(data);
       canvas.setGraph(Serializer.deserialize(json));
       const node = new CustomNode({
-        x: 0,
-        y: 0,
+        x: 600,
+        y: 600,
         width: 40,
         height: 40,
         color: "green",

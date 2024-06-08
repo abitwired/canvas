@@ -66,18 +66,34 @@ export class InfiniteCanvas {
   private isDragging = false;
 
   /**
+   * The minimum zoom level.
+   */
+  private minZoom = 0.1;
+
+  /**
+   * The maximum zoom level.
+   */
+  private maxZoom = 10;
+
+  /**
    * Creates a new instance of InfiniteCanvas.
    * @param options - The options for creating the canvas.
    */
   constructor({
     canvas,
     background = "#333",
+    minZoom = 0.1,
+    maxZoom = 10,
   }: {
     canvas: HTMLCanvasElement;
     background?: string;
+    minZoom?: number;
+    maxZoom?: number;
   }) {
     this.canvas = canvas;
     this.background = background;
+    this.minZoom = minZoom;
+    this.maxZoom = maxZoom;
 
     this.ctx = canvas.getContext("2d") as CanvasRenderingContext2D;
     this.graph = new Graph();
@@ -159,12 +175,19 @@ export class InfiniteCanvas {
   private hover(event: MouseEvent) {
     const { x: mouseX, y: mouseY } = this.getMouseCoordinates(event);
     this.graph.nodes.forEach((node) => {
+      node.hoverOff();
+    });
+
+    const selectedNode = this.graph.nodes.findLast((node) => {
       if (node.containsPoint(mouseX, mouseY)) {
-        node.hoverOn();
-      } else {
-        node.hoverOff();
+        return node;
       }
     });
+
+    if (selectedNode) {
+      this.isDragging = true;
+      selectedNode.hoverOn();
+    }
 
     this.draw();
   }
@@ -202,14 +225,17 @@ export class InfiniteCanvas {
     this.isDragging = false;
 
     const { x: mouseX, y: mouseY } = this.getMouseCoordinates(event);
-    this.graph.nodes.forEach((node) => {
+    const selectedNode = this.graph.nodes.findLast((node) => {
       if (node.containsPoint(mouseX, mouseY)) {
-        this.isDragging = true;
-        node.onDragStart(mouseX, mouseY);
+        return node;
       }
     });
 
-    this.draw();
+    if (selectedNode) {
+      this.isDragging = true;
+      selectedNode.onDragStart(mouseX, mouseY);
+      this.draw();
+    }
   }
 
   /**
@@ -280,6 +306,14 @@ export class InfiniteCanvas {
 
     const worldX = (mouseX - this.offsetX) / this.scale;
     const worldY = (mouseY - this.offsetY) / this.scale;
+
+    if (this.scale * (zoomIn ? scaleFactor : 1 / scaleFactor) < this.minZoom) {
+      return;
+    }
+
+    if (this.scale * (zoomIn ? scaleFactor : 1 / scaleFactor) > this.maxZoom) {
+      return;
+    }
 
     this.scale *= zoomIn ? scaleFactor : 1 / scaleFactor;
 
