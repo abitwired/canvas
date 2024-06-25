@@ -160,6 +160,15 @@ export class InfiniteCanvas {
   }
 
   /**
+   * Gets a node by its ID.
+   * @param id - The ID of the node.
+   * @returns The node with the given ID.
+   */
+  public getNode(id: string) {
+    return this.graph.getNode(id);
+  }
+
+  /**
    * Resizes the canvas to fit the window size.
    */
   private resizeCanvas() {

@@ -15,6 +15,10 @@ export class Graph {
     this.nodes.push(node);
   }
 
+  getNode(id: string) {
+    return this.nodes.find((node) => node.id === id);
+  }
+
   addEdge({ from, to }: { from: INode; to: INode }) {
     const edge = new Edge(from, to);
     this.edges.push(edge);

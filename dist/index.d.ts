@@ -153,6 +153,7 @@ declare class Graph {
     nodes: INode[];
     edges: Edge[];
     addNode(node: INode): void;
+    getNode(id: string): INode | undefined;
     addEdge({ from, to }: {
         from: INode;
         to: INode;
@@ -283,6 +284,12 @@ declare class InfiniteCanvas {
     removeEdge({ edge }: {
         edge: Edge;
     }): void;
+    /**
+     * Gets a node by its ID.
+     * @param id - The ID of the node.
+     * @returns The node with the given ID.
+     */
+    getNode(id: string): INode | undefined;
     /**
      * Resizes the canvas to fit the window size.
      */

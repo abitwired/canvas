@@ -18,6 +18,10 @@ fetch("./demo.json")
         color: "green",
       });
       canvas.addNode({ node });
+      const from = canvas.getNode("1");
+      const to = canvas.getNode("custom-node");
+      const edge = { from: from, to: to };
+      canvas.addEdge({ edge });
     } catch (error) {
       console.error(error);
     }
